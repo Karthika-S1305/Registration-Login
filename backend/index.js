@@ -13,7 +13,6 @@ mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
 
 app.use('/', authRoutes);
 
-app.listen(PORT, ()=>{
+app.listen(PORT, ()=>{  
     console.log(`Server is running on ${PORT}`);
 });
-
