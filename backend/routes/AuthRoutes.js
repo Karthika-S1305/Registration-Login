@@ -9,4 +9,6 @@ app.post('/api/register', authController.registerUser);
 
 app.post('/api/login', authController.loginUser );
 
+app.post('/api/forgot-password', authController.forgotPassword);
+
 module.exports = app;

@@ -4,6 +4,10 @@ const cors = require('cors');
 const authRoutes = require('./routes/AuthRoutes');
 const app = express();
 const db = 'mongodb://localhost:27017/myapp';
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 app.use(cors());
 const PORT = 5000;
 
