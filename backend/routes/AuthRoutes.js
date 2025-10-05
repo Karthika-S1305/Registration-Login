@@ -11,4 +11,8 @@ app.post('/api/login', authController.loginUser );
 
 app.post('/api/forgot-password', authController.forgotPassword);
 
+app.post('/api/submit-otp', authController.verifyOTP);
+
+app.post('/api/reset-password', authController.resetPassword);
+
 module.exports = app;

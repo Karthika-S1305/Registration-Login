@@ -103,8 +103,61 @@ const forgotPassword = async(req, res) =>{
     }
 }
 
+const verifyOTP = async(req, res) =>{
+    const { email, otp }= req.body;
+    
+    if(!otpStore[email]){
+        return res.status(400).json({message: "OTP expired"});
+    }
+    const {otp: storedOtp, expires} = otpStore[email];
+
+    if(Date.now()> expires){
+        return res.status(400).json({message: "OTP Expired, Please request a new one"});
+    }
+
+    if(parseInt(otp) !== storedOtp){
+        return res.status(400).json({message: "Please enter a correct OTP"})
+    }
+
+    return res.status(200).json({message: "OTP Verified Successfully"});
+}
+
+const resetPassword = async(req, res) =>{
+    const { email, newPassword, confirmPassword } = req.body;
+
+    try{
+        if(!otpStore[email]){
+            return res.status(400).json({message: "OTP Verification required before resetting password"});
+        }
+        if(newPassword !== confirmPassword ){
+            return res.status(400).json({message: "Password is required"});
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        const user = await User.findOneAndUpdate(
+            {email},
+            {password: hashedPassword},
+            {new: true}
+        )
+
+        if(!user){
+            return res.status(400).json({message: "User not found"})
+        }
+
+        delete otpStore[email];
+
+        res.status(200).json({message: "Passwor has been reset successfully"});
+    }catch(error){
+        res.status(500).json({message: "Error resetting Password"})
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
-    forgotPassword
+    forgotPassword,
+    verifyOTP,
+    resetPassword
 }
